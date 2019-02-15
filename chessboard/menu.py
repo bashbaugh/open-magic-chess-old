@@ -1,4 +1,4 @@
-"""A file to store all the menu names
+"""A file to store all the menu name constants
 
 """
 
@@ -7,3 +7,4 @@ ALL_MENUS = [
     MAIN_MENU,
     LOAD_GAME
 ] = range(3)
+        
