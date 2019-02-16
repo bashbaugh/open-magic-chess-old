@@ -22,16 +22,19 @@ And then setup and connect SSH. Here is a tutorial:
 
 https://core-electronics.com.au/tutorials/raspberry-pi-zerow-headless-wifi-setup.html
 
+Finally, you will need expand your filesystem. SSH into your pi then type `sudo raspi-config` and then go to “Advanced Options” > “Expand Filesystem”. Then press "Finish" and say yes when it asks you to "reboot now".
 
 ### Python dependencies
 
-SSH into your pi and type `git clone https://github.com/scitronboy/open-magic-chess.git` to download the code.
+SSH into your pi again and type this to install Git and pip: `sudo apt install git python3-pip -y` . It will take a minute or two.
+
+Then type `git clone https://github.com/scitronboy/open-magic-chess.git` to download the code.
 
 Then type `cd open-magic-chess` to change into the directory. Now you will need the following:
 
 + Python 3.5 - comes preinstalled on Raspbian. Typing `python3 --version` should return something containing `3.5`. 
-+ Python requirements (python-chess, smbus2, RPi.GPIO) - install with `pip3 install -r requirements.txt`
-+ Stockfish 8 or higher - install with `sudo apt install stockfish`
++ Python requirements (python-chess, smbus2, RPi.GPIO) - install with `sudo pip3 install -r requirements.txt`
++ Stockfish 8 or higher - install with `sudo apt install stockfish -y`
 
 If you are planning to do python development on this project, you will also need a virtual environment: 
 
@@ -52,8 +55,9 @@ You might also need to do the following: type `sudo nano /etc/modules` and then 
     i2c-bcm2708
     i2c-dev
     
-Then press `Ctr+x` then `y` then type `sudo reboot` to reboot the pi.
-    
+Then press `Ctr+x` then `y` then enter/return then `sudo reboot` to reboot the pi.
+
+That's the end of the software installation!
     
 ## Contributing
 
