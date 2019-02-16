@@ -8,21 +8,15 @@ Coming soon.
 
 ## Software Setup instructions
 
-Install raspbian lite on a raspberry pi and set it up so that you can ssh into it:
+Install raspbian lite on a raspberry pi zero W and set it up so that you can ssh into it:
 
-Download Raspbian Lite from here:
+[Download Raspbian Lite from here](https://www.raspberrypi.org/downloads/raspbian/).
 
-https://www.raspberrypi.org/downloads/raspbian/
+[Install the image](https://www.raspberrypi.org/documentation/installation/installing-images/README.md).
 
-Install the image. Here is a tutorial:
+And then setup and connect headless SSH so that you can access your pi without connecting it to a monitor or keyboard. [Here is a tutorial](https://core-electronics.com.au/tutorials/raspberry-pi-zerow-headless-wifi-setup.html).
 
-https://www.raspberrypi.org/documentation/installation/installing-images/README.md
-
-And then setup and connect SSH. Here is a tutorial:
-
-https://core-electronics.com.au/tutorials/raspberry-pi-zerow-headless-wifi-setup.html
-
-Finally, you will need expand your filesystem. SSH into your pi then type `sudo raspi-config` and then go to “Advanced Options” > “Expand Filesystem”. Then press "Finish" and say yes when it asks you to "reboot now".
+Finally, you will need expand your filesystem so that you can take advantage of the full capacity of your SD card. SSH into your pi then type `sudo raspi-config` and then navigate to “Advanced Options” > “Expand Filesystem”. Then press "Finish" and say yes when it asks you to "reboot now".
 
 ### Python dependencies
 
@@ -50,7 +44,7 @@ If you are just planning to build the chessboard then you do not need a virtuale
 
 You will need to enable I2C on the raspberry pi: type `sudo raspi-config` and then go to “Interfacing Options” > “I2C” and enable it. 
 
-You might also need to do the following: type `sudo nano /etc/modules` and then add the following to the bottom of the file:
+You might also need to type `sudo nano /etc/modules` and then add the following to the bottom of the file:
 
     i2c-bcm2708
     i2c-dev
