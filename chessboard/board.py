@@ -26,14 +26,16 @@ import chess.engine
 #import menu
 
 # PINS
+# SDA = 2; SCL = 3
 OUTPUTS = [
-    WHITE_LED_RED,
-    WHITE_LED_GREEN,
-    WHITE_LED_BLUE,
-    BLACK_LED_RED,
-    BLACK_LED_GREEN,
-    BLACK_LED_BLUE,
-] = [0,0,0,0,0,0]
+    LED_RED,
+    LED_GREEN,
+    LED_BLUE,
+    MOTOR_LEFT,
+    MOTOR_RIGHT,
+    MOTOR_UP,
+    MOTOR_DOWN,
+] = [0,0,0,0,0,0,0]
 
 REED_OUT = [0,0,0,0,0,0,0,0]
 REED_IN = [0,0,0,0,0,0,0,0]
@@ -47,6 +49,8 @@ INPUTS = [
 # CONSTANTS
 GAME_MODES = [MODE_PVB, MODE_PVP, MODE_BVB] = 0,1,2
 
+BOARD_STATUSES = [IN_MENU, IN_GAME, GAME_PAUSED] = 0, 1, 2
+
     
 class Board:
     """ Magic chess board
@@ -58,13 +62,17 @@ class Board:
         self.co = 0 # current option
         self.active = True
         self.game = None
+        self.status = IN_MENU
+        self.start_turn = True
         
         # Game options
         self.mode = None
+        self.flip_board = None
         self.player_color = None
         self.engine_time_limit = None
         
         self.engine = chess.engine.SimpleEngine.popen_uci("stockfish")
+        self.engine_results =  []
         
         gpio.setmode(gpio.BCM)
         for pin in OUTPUTS + REED_OUT:
@@ -76,17 +84,24 @@ class Board:
             
     def main(self):
         try:
-            while True:
-                if not self.active:
-                    break
-                self.run_menu()
+            while self.active:
+                
+                if self.status == IN_MENU or self.status == GAME_PAUSED:
+                    self.run_menu()
+                elif self.status == IN_GAME:
+                    self.run_game()
+                    
+                sleep(0.05)
         except KeyboardInterrupt:
             self.shutdown()
         
     def run_menu(self):
-        cm = self.menu_stack[-1] # Current Menu
+        if self.status is not GAME_PAUSED:
+            cm = self.menu_stack[-1] # Current Menu
+        else:
+            cm = PAUSE_MENU
         
-        if not cm.optionl1:
+        if cm.optionl1 is None:
             self.lcd.disp_two_lines(cm.options[self.co])
         else:
             self.lcd.clear()
@@ -99,7 +114,7 @@ class Board:
         sleep(0.5)
         if back:
             self.co = 0
-            if len(self.menu_stack) > 1:
+            if len(self.menu_stack) > 1 and self.status is not GAME_PAUSED:
                 del self.menu_stack[-1]
         
         if no:
@@ -116,16 +131,56 @@ class Board:
                 cm.next_menu(self)
             self.co = 0
             
-    def getPlay(board, result):
-        result = engine.play(board, chess.engine.Limit(time=1))
-        board.push(result.move)
-        print(str(board.peek()))
+    def run_game(self):
+        self.game_display()
+        if self.mode == MODE_PVB:
+            if self.game.turn == self.player_color:
+                pass
+            else:
+                if self.start_turn:
+                    self.engine_process = Thread(target=self.play_engine)
+                    self.lcd.disp_two_lines(["Thinking...", ""])
+                    self.engine_process.start()
+                    self.start_turn = False
+                elif not self.engine_process.isAlive():
+                    self.game.push(self.engine_results[-1].move)
+                    self.move_piece(self.game.peek())
+                    self.start_turn = True
+                    self.lcd.disp_two_lines(["Your Turn", ""])
+                    
+        back, yes, no = self.buttons()
+        if back or yes or no:
+            self.status = GAME_PAUSED
+            
+    def game_display(self, redraw=False):
+        pass
+            
+    def save_game(self):
+        pass
+                
+    def move_piece(self, move):
+        self.lcd.disp_two_lines(["Moving", str(move)])
+        sleep(2)
+            
+    def play_engine(self):
+        result = self.engine.play(self.game, chess.engine.Limit(time=self.engine_time_limit))
+        self.engine_results.append(result)
+        
+    def start_game(self):
+        set_up = False
+        while not set_up:
+            set_up = True
+        
+        if self.confirm("   Press yes", " to start game"):
+            self.start_turn = True
+            self.status = IN_GAME
             
     def confirm(self, l1, l2):
         self.lcd.disp_two_lines([l1, l2])
         back, yes, no = self.buttons()
         while not (back or yes or no):
             back, yes, no = self.buttons()
+        sleep(0.2)
         return True if yes else False
 
     def buttons(self):
@@ -145,7 +200,7 @@ class Board:
         
 # Menus    
 class MAIN_MENU:
-    optionl1 = False
+    optionl1 = None
     options = [["Create New Game:", "Player VS Board"], 
                 ["Create New Game:", "Player VS Player"],
                 ["Create New Game:", "Board VS Board"],
@@ -163,26 +218,40 @@ class MAIN_MENU:
             board.menu_stack.append(CHOOSE_WHITE_SIDE_MENU)
             print(board.mode)
                 
+class PAUSE_MENU:
+    optionl1 = "--Game Paused--"
+    options = ["Continue Game?", "Save Game?", "Cancel Game?"]
+    
+    def yes(board):
+        if board.co == 0:
+            board.status = IN_GAME
+            board.game_display(redraw=True)
+        elif board.co == 1:
+            board.save_game()
+        elif board.co == 2:
+            if board.confirm(" Are You Sure?", ""):
+                board.status = IN_MENU
+                board.menu_stack = [MAIN_MENU]
+                
 class CHOOSE_WHITE_SIDE_MENU:
-    optionl1 = False
+    optionl1 = None
     options = [["Flip board y/n:", "White At Front?"]]
     
     def yes(board):
-        board.game = chess.Board().mirror()
+        board.flip_board = True
         
     def no(board):
-        board.game = chess.Board()
+        board.flip_board = False
         
     def next_menu(board):
+        board.game = chess.Board()
         if board.mode == MODE_PVB:
             board.menu_stack.append(CHOOSE_COLOR_MENU)
-        elif board.mode == MODE_PVP:
-            pass
         else:
             board.confirm("Feature", "Unavailable")
 
 class CHOOSE_COLOR_MENU:
-    optionl1 = False
+    optionl1 = None
     options = [["  Do you want", "  to be white?"]]
     
     def yes(board):
@@ -195,7 +264,7 @@ class CHOOSE_COLOR_MENU:
         board.menu_stack.append(CHOOSE_ENGINE_TIME_LIMIT_MENU)
 
 class LOAD_GAME_MENU:
-    optionl1 = False
+    optionl1 = None
     options = [["Choose Game:", "no games"]]
     
 class CHOOSE_ENGINE_TIME_LIMIT_MENU:
@@ -216,18 +285,15 @@ class CHOOSE_ENGINE_TIME_LIMIT_MENU:
             tl = 60
         
         board.engine_time_limit = tl
-        board.wait_for_setup()
+        board.start_game()
     
             
     
 board = Board(lcd)
+#sleep(0.5)
 board.main()
-
 
 if SHUTDOWN_AT_END:
     os.system("sudo shutdown -h now")
-
-
-
-
-
+    
+    
