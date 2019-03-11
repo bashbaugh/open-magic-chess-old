@@ -19,6 +19,7 @@ if USE_KEYBOARD:
     import keyboard 
 from time import sleep
 from threading import Thread
+import socket
 import os
 import RPi.GPIO as gpio
 import chess
@@ -49,7 +50,7 @@ INPUTS = [
 # CONSTANTS
 GAME_MODES = [MODE_PVB, MODE_PVP, MODE_BVB] = 0,1,2
 
-BOARD_STATUSES = [IN_MENU, IN_GAME, GAME_PAUSED] = 0, 1, 2
+BOARD_STATUSES = [IN_MENU, IN_GAME, GAME_PAUSED, SHUTDOWN] = 0, 1, 2, 3
 
     
 class Board:
@@ -60,7 +61,6 @@ class Board:
         self.lcd = lcd
         self.menu_stack = [MAIN_MENU]
         self.co = 0 # current option
-        self.active = True
         self.game = None
         self.status = IN_MENU
         self.start_turn = True
@@ -84,7 +84,7 @@ class Board:
             
     def main(self):
         try:
-            while self.active:
+            while self.status is not SHUTDOWN:
                 
                 if self.status == IN_MENU or self.status == GAME_PAUSED:
                     self.run_menu()
@@ -149,7 +149,7 @@ class Board:
                     self.lcd.disp_two_lines(["Your Turn", ""])
                     
         back, yes, no = self.buttons()
-        if back or yes or no:
+        if True in (back, yes, no):
             self.status = GAME_PAUSED
             
     def game_display(self, redraw=False):
@@ -196,7 +196,7 @@ class Board:
         sleep(3)
         self.lcd.clear()
         self.lcd.backlight(False)
-        self.active = False
+        self.status = SHUTDOWN
         
 # Menus    
 class MAIN_MENU:
@@ -205,13 +205,26 @@ class MAIN_MENU:
                 ["Create New Game:", "Player VS Player"],
                 ["Create New Game:", "Board VS Board"],
                 ["   Load Game", ""],
-                ["    Shutdown", ""]]
+                ["    Shutdown", ""],
+                [" Get Local IP", ""],]
+    
     def yes(board):
         if board.co == 3:
             board.menu_stack.append(LOAD_GAME_MENU)
         elif board.co == 4:
             if board.confirm(" Are You Sure?", ""):
                 board.shutdown()
+        elif board.co == 5:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            try:
+                # doesn't even have to be reachable
+                s.connect(('10.255.255.255', 1))
+                hostname = s.getsockname()[0]
+                board.confirm("Local IP is:", hostname)
+            except OSError:
+                board.confirm("Network", "Unreachable")
+            finally:
+                s.close()
         else:
             board.mode = board.co
             board.game = chess.Board()
