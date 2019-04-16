@@ -1,10 +1,16 @@
-﻿# Based off of the scripts at: 
+# Based off of the scripts at:
 # https://github.com/CaptainStouf/raspberry_lcd4x20_I2C
+# It appears to work with a 2x16 LCD as well.
 # Modified by Benjamin A.
+
+# If you would like to use a different LCD, add annother class below
+# And then use it in board.py instead of Default_lcd
+# Just make sure your custom class has the methods listed below.
 
 """ Commands to control a I2C LCD screen with raspberry pi
 clear() - clear the LCD
 display_string(string, line) - write string to line of LCD
+disp_two_lines([line1, line2]) - write line1 and line2 to line 1 and line 2 on the LCD
 backlight(state) - turn backlight on (True) or off (False)
 write(command) - write a command to the LCD.
 
@@ -96,7 +102,7 @@ En = 0b00000100 # Enable bit
 Rw = 0b00000010 # Read/Write bit
 Rs = 0b00000001 # Register select bit
 
-class lcd:
+class Default_lcd:
 
     #initializes objects and lcd
     def __init__(self):

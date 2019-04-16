@@ -1,24 +1,24 @@
 """Magic Chess Board
-Play an AI on a real board
+High tech chessboard.
 
 https://github.com/scitronboy/open-magic-chess
 
 Written by Benjamin A.
 """
 
-USE_KEYBOARD = True
-SHUTDOWN_AT_END = False
+import config as cfg
 
-import lcd_driver
-lcd = lcd_driver.lcd()
+from parts import lcd_driver
+lcd = lcd_driver.Default_lcd()
 lcd.clear()
 lcd.disp_two_lines(["Magic Chessboard", "Loading..."])
 #lcd.backlight(True)
 
 if USE_KEYBOARD:
-    import keyboard 
+    import keyboard
 from time import sleep
 from threading import Thread
+import traceback
 import socket
 import os
 import RPi.GPIO as gpio
@@ -52,7 +52,7 @@ GAME_MODES = [MODE_PVB, MODE_PVP, MODE_BVB] = 0,1,2
 
 BOARD_STATUSES = [IN_MENU, IN_GAME, GAME_PAUSED, SHUTDOWN] = 0, 1, 2, 3
 
-    
+
 class Board:
     """ Magic chess board
     """
@@ -60,10 +60,14 @@ class Board:
     def __init__(self, lcd):
         self.lcd = lcd
         self.menu_stack = [MAIN_MENU]
-        self.co = 0 # current option
+        self.co = 0 # current menu option
         self.game = None
         self.status = IN_MENU
+        
+        # In-game variables
         self.start_turn = True
+        self.white_clock = 0
+        self.black_clock = 0
         
         # Game options
         self.mode = None
@@ -198,10 +202,10 @@ class Board:
         self.lcd.backlight(False)
         self.status = SHUTDOWN
         
-# Menus    
+# Menus
 class MAIN_MENU:
     optionl1 = None
-    options = [["Create New Game:", "Player VS Board"], 
+    options = [["Create New Game:", "Player VS Board"],
                 ["Create New Game:", "Player VS Player"],
                 ["Create New Game:", "Board VS Board"],
                 ["   Load Game", ""],
@@ -217,7 +221,6 @@ class MAIN_MENU:
         elif board.co == 5:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             try:
-                # doesn't even have to be reachable
                 s.connect(('10.255.255.255', 1))
                 hostname = s.getsockname()[0]
                 board.confirm("Local IP is:", hostname)
@@ -299,14 +302,31 @@ class CHOOSE_ENGINE_TIME_LIMIT_MENU:
         
         board.engine_time_limit = tl
         board.start_game()
-    
             
     
 board = Board(lcd)
-#sleep(0.5)
-board.main()
 
-if SHUTDOWN_AT_END:
-    os.system("sudo shutdown -h now")
+def start:
+    delay(cfg.LOADING_DELAY) # Just to show off the loading screen!
+    try:
+        board.main()
+    except Exception as e:
+        if e == "KeyboardInterrupt":
+            print("\nKeyboardInterrupt")
+        else:
+            print("\nProgram Crashed:\n")
+            print(traceback.format_exc())
+            if cfg.RESTART_ON_FAIL:
+                print("Restarting...")
+                try:
+                    lcd.disp_two_lines([" Board crashed", " Restarting..."])
+                except:
+                    print("Failed to write to LCD")
+    
+    if SHUTDOWN_AT_END:
+        os.system("sudo shutdown -h now")
+                
+start()
+print("Goodbye")
     
     
