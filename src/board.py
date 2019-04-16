@@ -1,9 +1,9 @@
-"""Magic Chess Board
+"""Open Magic Chess
 High tech chessboard.
 
 https://github.com/scitronboy/open-magic-chess
 
-Written by Benjamin A.
+Copyright 2019 Benjamin A. and contributors
 """
 
 import config as cfg
@@ -14,44 +14,47 @@ lcd.clear()
 lcd.disp_two_lines(["Magic Chessboard", "Loading..."])
 #lcd.backlight(True)
 
-if USE_KEYBOARD:
+if cfg.USE_KEYBOARD:
     import keyboard
 from time import sleep
 from threading import Thread
 import traceback
+import logging
+from logging.handlers import RotatingFileHandler
 import socket
 import os
-import RPi.GPIO as gpio
 import chess
 import chess.engine
-#import menu
 
-# PINS
-# SDA = 2; SCL = 3
-OUTPUTS = [
-    LED_RED,
-    LED_GREEN,
-    LED_BLUE,
-    MOTOR_LEFT,
-    MOTOR_RIGHT,
-    MOTOR_UP,
-    MOTOR_DOWN,
-] = [0,0,0,0,0,0,0]
+# Create logs and saves directory:
+if not os.path.isdir(cfg.BASE_DIR + 'logs'):
+    os.mkdir(cfg.BASE_DIR + 'logs')
+if not os.path.isdir(cfg.BASE_DIR + 'data'):
+    os.mkdir(cfg.BASE_DIR + 'data')
 
-REED_OUT = [0,0,0,0,0,0,0,0]
-REED_IN = [0,0,0,0,0,0,0,0]
+# Logging
+logging_formatter = logging.Formatter(cfg.LOGGING_FORMAT, cfg.LOGGING_DATE_FORMAT)
 
-INPUTS = [
-    BUTTON_BACK,
-    BUTTON_YES,
-    BUTTON_NO,
-] = [0,0,0]
+logging_sh = logging.StreamHandler()
+logging_sh.setLevel(logging.DEBUG)
+logging_sh.setFormatter(logging_formatter)
+
+logging_rfh = RotatingFileHandler(cfg.BASE_DIR + 'logs/chessboard.log', maxBytes=cfg.LOG_FILE_MAX_BYTES, backupCount=cfg.LOGGING_BACKUP_COUNT)
+logging_rfh.setLevel(cfg.LOGGING_LEVEL)
+logging_rfh.setFormatter(logging_formatter)
+
+logger = logging.getLogger("omc-logger")
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging_sh)
+logger.addHandler(logging_rfh)
+
+
+crash_counter = 0
 
 # CONSTANTS
 GAME_MODES = [MODE_PVB, MODE_PVP, MODE_BVB] = 0,1,2
 
 BOARD_STATUSES = [IN_MENU, IN_GAME, GAME_PAUSED, SHUTDOWN] = 0, 1, 2, 3
-
 
 class Board:
     """ Magic chess board
@@ -78,12 +81,7 @@ class Board:
         self.engine = chess.engine.SimpleEngine.popen_uci("stockfish")
         self.engine_results =  []
         
-        gpio.setmode(gpio.BCM)
-        for pin in OUTPUTS + REED_OUT:
-            gpio.setup(pin, gpio.OUT)
-            
-        for pin in INPUTS + REED_IN:
-            gpio.setup(pin, gpio.IN)
+        logger.info("Board initialized")
             
             
     def main(self):
@@ -188,7 +186,7 @@ class Board:
         return True if yes else False
 
     def buttons(self):
-        if USE_KEYBOARD:
+        if cfg.USE_KEYBOARD:
             return keyboard.is_pressed('b'), keyboard.is_pressed('y'), keyboard.is_pressed('n')
         else:
             pass
@@ -303,30 +301,38 @@ class CHOOSE_ENGINE_TIME_LIMIT_MENU:
         board.engine_time_limit = tl
         board.start_game()
             
-    
-board = Board(lcd)
 
-def start:
-    delay(cfg.LOADING_DELAY) # Just to show off the loading screen!
+def start():
+    global crash_counter
+    sleep(cfg.LOADING_DELAY) # Just to show off the loading screen!
     try:
+        board = Board(lcd)
         board.main()
     except Exception as e:
         if e == "KeyboardInterrupt":
-            print("\nKeyboardInterrupt")
-        else:
-            print("\nProgram Crashed:\n")
-            print(traceback.format_exc())
-            if cfg.RESTART_ON_FAIL:
-                print("Restarting...")
-                try:
-                    lcd.disp_two_lines([" Board crashed", " Restarting..."])
-                except:
-                    print("Failed to write to LCD")
+            logger.info("KeyboardInterrupt")
+            return
+            
+        crash_counter += 1
+        
+        logger.error("Program crashed")
+        logger.critical(traceback.format_exc())
+        if crash_counter >= cfg.MAXIMUM_CRASHES:
+            logger.warning("Max crashes reached. Stopping.")
+            lcd.disp_two_lines([" Board crashed", "  Check logs"])
+            return
+        
+        if cfg.RESTART_ON_CRASH:
+            logger.warning("Restarting...")
+            try:
+                lcd.disp_two_lines([" Board crashed", " Restarting..."])
+            except:
+                logger.error("Failed to write to LCD")
+            sleep(cfg.LOADING_DELAY + 5)
+            start()
     
-    if SHUTDOWN_AT_END:
+    if cfg.SHUTDOWN_AT_END:
         os.system("sudo shutdown -h now")
-                
+
 start()
-print("Goodbye")
-    
-    
+logger.info("Program finished")

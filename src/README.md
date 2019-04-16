@@ -1,4 +1,4 @@
-## /src directory
+## `/src` directory
 
 This directory contains all the code for the chessboard.
 
@@ -6,9 +6,9 @@ This directory contains all the code for the chessboard.
 
 The main file, contains the code for the chessboard. This file imports the code from all the other files.
 
-### `menus.py`
+### `menu.py`
 
-This file contains the menu functionality. The menu layout plan is listed in `menu_layout.md`
+This file contains the menus. The menu layout plan is listed in `menu_layout.md`
 
 ### parts
 

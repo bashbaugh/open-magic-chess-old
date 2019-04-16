@@ -26,11 +26,11 @@ Then type `git clone https://github.com/scitronboy/open-magic-chess.git` to down
 
 Then type `cd open-magic-chess` to change into the directory. Now you will need the following:
 
-+ Python 3.5 - comes preinstalled on Raspbian. Typing `python3 --version` should return something containing `3.5`. 
-+ Python requirements (python-chess, smbus2, RPi.GPIO) - install with `sudo pip3 install -r requirements.txt`
++ Python 3.5 - comes preinstalled on Raspbian. Typing `python3 --version` should return something containing `3.5`.
++ Python requirements (python-chess, smbus2, RPi.GPIO, etc.) - install with `sudo pip3 install -r requirements.txt`
 + Stockfish 8 or higher - install with `sudo apt install stockfish -y`
 
-If you are planning to do python development on this project, you will also need a virtual environment: 
+If you are planning to do python development on this project, you will also need a virtual environment:
 
     pip3 install virtualenv
     virtualenv -p python3 venv
@@ -42,7 +42,7 @@ If you are just planning to build the chessboard then you do not need a virtuale
 
 ### Enable I2C
 
-You will need to enable I2C on the raspberry pi: type `sudo raspi-config` and then go to “Interfacing Options” > “I2C” and enable it. 
+You will need to enable I2C on the raspberry pi: type `sudo raspi-config` and then go to “Interfacing Options” > “I2C” and enable it.
 
 You might also need to type `sudo nano /etc/modules` and then add the following to the bottom of the file:
 
