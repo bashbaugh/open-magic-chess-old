@@ -1,12 +1,10 @@
-# Magic Chess
+# Magic Chess Boar
 
-> COMING SOON! 
+COMING SOON! An open-source high-tech electronic chessboard. Not finished yet! Once this project is finished I will share links to a tutorial.
 
-An high-tech electronic chessboard.
+## Electronics Setup
 
-## Hardware Requirements
-
-Coming soon.
+`TODO electronics setup instructions`
 
 ## Software Setup instructions
 
@@ -54,9 +52,13 @@ You might also need to type `sudo nano /etc/modules` and then add the following 
 Then press `Ctr+x` then `y` then enter/return then `sudo reboot` to reboot the pi.
 
 That's the end of the software installation!
+
+## Legal
+
+This project is licensed under the [MIT License](https://github.com/scitronboy/open-magic-chess/blob/master/LICENSE). 
+
+You are free to modify and distribute copies of this software (read license for more details). If you do so, please give credit to it's creators, Benjamin A. and contributors. Also please link to this GitHub repository!
     
 ## Contributing
 
-Feel free to contribute to this project in any way you want. Keep in mind that it is best to open an issue before opening a pull request, so that we can discuss your idea/bug-fix/etc.
-
-
+Feel free to contribute to this project in any way you want. Keep in mind that it is best to open an issue before opening a pull request, so that we can discuss your idea/bug-fix/etc. Also look through closed issues before you open your own, so that you don't post something that's already been solved.
