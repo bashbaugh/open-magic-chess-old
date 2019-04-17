@@ -1,5 +1,7 @@
 # Magic Chess
 
+> COMING SOON! 
+
 An high-tech electronic chessboard.
 
 ## Hardware Requirements
