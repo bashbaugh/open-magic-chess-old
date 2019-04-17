@@ -102,7 +102,7 @@ En = 0b00000100 # Enable bit
 Rw = 0b00000010 # Read/Write bit
 Rs = 0b00000001 # Register select bit
 
-class Default_lcd:
+class Serial_lcd:
 
     #initializes objects and lcd
     def __init__(self):

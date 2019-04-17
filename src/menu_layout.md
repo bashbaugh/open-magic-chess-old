@@ -1,14 +1,14 @@
 
 
-The layout of the menu system. If you make a change to the way the menu system works, please reflect those changes here.
+The layout and flow of the menu system. If you make a change to the way the menu system works, please reflect those changes here.
 
 ### Main menu
 
-Player vs board -> flip board? -> choose color -> engine time limit -> set up board -> start game
+Create game -> Player vs board -> flip board? -> choose color -> engine time limit -> Use clock? -> set up board -> start game
 
-player vs player -> flip board?
+Create game -> player vs player -> flip board?
 
-board vs board -> flip board? 
+Create game -> board vs board -> flip board?
 
 Load game -> Select game to load -> set up board -> continue game
 

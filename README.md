@@ -27,7 +27,7 @@ Then type `git clone https://github.com/scitronboy/open-magic-chess.git` to down
 Then type `cd open-magic-chess` to change into the directory. Now you will need the following:
 
 + Python 3.5 - comes preinstalled on Raspbian. Typing `python3 --version` should return something containing `3.5`.
-+ Python requirements (python-chess, smbus2, RPi.GPIO, etc.) - install with `sudo pip3 install -r requirements.txt`
++ Python requirements (python-chess, smbus2, gpiozero, etc.) - install with `sudo pip3 install -r requirements.txt`
 + Stockfish 8 or higher - install with `sudo apt install stockfish -y`
 
 If you are planning to do python development on this project, you will also need a virtual environment:
