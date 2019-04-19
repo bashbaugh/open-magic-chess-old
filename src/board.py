@@ -104,6 +104,7 @@ class Board:
         self.engine = chess.engine.SimpleEngine.popen_uci("stockfish")
         self.engine_results =  []
         
+        self.led.rainbow(40)
         logger.info("Board initialized")
             
             
@@ -180,6 +181,7 @@ class Board:
         self.game = chess.Board()
             
     def game_display(self, redraw=False):
+        self.led.colorBW('green', 'off') if self.game.turn == chess.BLACK else self.led.colorBW('off', 'green')
         pass
             
     def save_game(self):
@@ -213,6 +215,7 @@ class Board:
         while not set_up:
             set_up = True
         
+        self.led.color('violet')
         if self.confirm("   Press yes", " to start game"):
             self.start_turn = True
             self.status = IN_GAME
@@ -235,6 +238,7 @@ class Board:
         sleep(cfg.SHUTDOWN_DELAY)
         self.lcd.clear()
         self.lcd.backlight(False)
+        self.led.shutdown()
         self.status = SHUTDOWN
             
 
