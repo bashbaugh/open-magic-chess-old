@@ -1,9 +1,10 @@
 """Menus
 """
-
-# Yes, I know I should
+from time import sleep
 
 import chess
+
+from constants import *
 
 class MAIN_MENU:
     optionl1 = None
@@ -31,11 +32,11 @@ class CHOOSE_GAME_TYPE_MENU:
     
     def yes(board):
         if board.co == 0:
-            board.mode = "PVP"
+            board.mode = MODE_PVP
         elif board.co == 1:
-            board.mode = "PVB"
+            board.mode = MODE_PVB
         else:
-            board.mode - "BVB"
+            board.mode = MODE_BVB
         
         board.menu_stack.append(CHOOSE_WHITE_SIDE_MENU)
         
@@ -54,6 +55,8 @@ class PAUSE_MENU:
             if board.confirm(" Are You Sure?", ""):
                 board.status = IN_MENU
                 board.menu_stack = [MAIN_MENU]
+                board.intro()
+                sleep(0.5)
                 
 class CHOOSE_WHITE_SIDE_MENU:
     optionl1 = None
@@ -69,7 +72,7 @@ class CHOOSE_WHITE_SIDE_MENU:
         
     def next_menu(board):
         board.clear_board()
-        if board.mode == 'PVB':
+        if board.mode == MODE_PVB:
             board.menu_stack.append(CHOOSE_COLOR_MENU)
         else:
             board.confirm("Feature", "Unavailable")

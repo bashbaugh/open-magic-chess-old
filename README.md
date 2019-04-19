@@ -51,11 +51,9 @@ You might also need to type `sudo nano /etc/modules` and then add the following 
     
 Then press `Ctr+x` then `y` then enter/return then `sudo reboot` to reboot the pi.
 
-That's the end of the software installation!
-
 ## Legal
 
-This project is licensed under the [MIT License](https://github.com/scitronboy/open-magic-chess/blob/master/LICENSE). 
+This project is licensed under the [MIT License](https://github.com/scitronboy/open-magic-chess/blob/master/LICENSE).
 
 You are free to modify and distribute copies of this software (read license for more details). If you do so, please give credit to it's creators, Benjamin A. and contributors. Also please link to this GitHub repository!
     

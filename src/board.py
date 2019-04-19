@@ -6,27 +6,41 @@ https://github.com/scitronboy/open-magic-chess
 Copyright 2019 Benjamin A. and contributors
 Licensed under MIT license, located in /LICENSE
 """
+from time import sleep
 
 import config as cfg
 
+def intro(loading=False, delay=cfg.INTRO_DELAY):
+    lcd.clear()
+    lcd.display_string("Open magic chess", 1)
+    if loading:
+        lcd.display_string("Loading...", 2)
+        sleep(delay * 1.5)
+    else:
+        lcd.display_string("Please wait...  ", 2)
+    sleep(delay)
+
 from parts import lcd_driver
 lcd = lcd_driver.Serial_lcd()
-lcd.clear()
-lcd.disp_two_lines(["  Loading....", "Open Magic Chess"])
+intro(loading=True)
 
-
-from time import sleep
 from threading import Thread
 import traceback
 import logging
 from logging.handlers import RotatingFileHandler
+from setproctitle import *
 import socket
 import os
 
 import chess
 import chess.engine
-from parts import controls, board_sensor, mover
+
+from constants import *
+from parts import controls, board_sensor, mover, leds
 import menu
+
+# Set process name so that it can be easily found and killed:
+setproctitle(cfg.PROCESS_NAME)
 
 # Create logs and saves directory:
 if not os.path.isdir(cfg.BASE_DIR + 'logs'):
@@ -52,11 +66,7 @@ logger.addHandler(logging_rfh)
 logger.info("--- Logger started ---")
 
 crash_counter = 0
-
-# CONSTANTS
-GAME_MODES = [MODE_PVB, MODE_PVP, MODE_BVB] = 'PVB', 'PVP', 'BVB'
-
-BOARD_STATUSES = [IN_MENU, IN_GAME, GAME_PAUSED, SHUTDOWN] = "in menu", "in game", "game paused", "shutting down"
+    
 
 class Board:
     """ Magic chess board
@@ -71,6 +81,7 @@ class Board:
         # Parts
         # If you want to use a customized part just replace any of these class names with your own.
         self.lcd = lcd
+        self.led = leds.Neopixel_RGB_LEDs(self.log_warning)
         self.controls = controls.Keyboard_controls()
         self.grid = board_sensor.Reedswitch_grid_sensor()
         self.mover = mover.Gearmotor_movement()
@@ -174,6 +185,10 @@ class Board:
     def save_game(self):
         pass
     
+    @staticmethod
+    def intro(*args):
+        intro(args)
+    
     def check_local_ip(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
@@ -211,9 +226,13 @@ class Board:
         sleep(cfg.BUTTON_PRESS_DELAY)
         return True if yes else False
         
+    @staticmethod
+    def log_warning(msg):
+        logger.warning(msg)
+
     def shutdown(self):
         self.lcd.disp_two_lines(["Allow 15 seconds", "  for shutdown"])
-        sleep(3)
+        sleep(cfg.SHUTDOWN_DELAY)
         self.lcd.clear()
         self.lcd.backlight(False)
         self.status = SHUTDOWN
@@ -221,7 +240,6 @@ class Board:
 
 def start():
     global crash_counter
-    sleep(cfg.LOADING_DELAY) # Just to show off the loading screen!
     try:
         board = Board(lcd)
         board.main()
@@ -242,11 +260,13 @@ def start():
                 lcd.disp_two_lines([" Board crashed", " Restarting..."])
             except:
                 logger.error("Failed to write to LCD")
-            sleep(cfg.RESTART_DELAY)
+            sleep(cfg.RESTART_DELAY / 2)
+            intro(delay = cfg.RESTART_DELAY / 2)
             start()
-    
-    if cfg.SHUTDOWN_AT_END:
-        os.system("sudo shutdown -h now")
 
 start()
+
 logger.info("Program finished\n")
+
+if cfg.SHUTDOWN_AT_END:
+        os.system("sudo shutdown -h now")
