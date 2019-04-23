@@ -28,7 +28,7 @@ class CHOOSE_GAME_TYPE_MENU:
     optionl1 = "Choose type:"
     options = ["Player vs Player",
                 "Player vs Board",
-                "Board vs board"]
+                "Board vs Board"]
     
     def yes(board):
         if board.co == 0:

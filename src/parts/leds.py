@@ -11,7 +11,7 @@ import rpi_ws281x as neopixel
 from rpi_ws281x import Color
 from threading import Thread
 
-colors = {'red': (255, 0, 0), 'green': (0, 255, 0), 'blue': (30, 0, 255), 'off': (0, 0, 0), 'violet': (150, 0, 105)}
+colors = {'red': (255, 0, 0), 'green': (0, 255, 0), 'blue': (30, 0, 255), 'off': (0, 0, 0), 'violet': (150, 0, 105), 'light_orange': (159, 96, 0)}
 
 class Neopixel_RGB_LEDs:
     """Neopixel ws281x addressable RGB led controller

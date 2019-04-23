@@ -6,7 +6,7 @@ https://github.com/scitronboy/open-magic-chess
 Copyright 2019 Benjamin A. and contributors
 Licensed under MIT license, located in /LICENSE
 """
-from time import sleep
+from time import sleep, time
 
 import config as cfg
 
@@ -31,6 +31,7 @@ from logging.handlers import RotatingFileHandler
 from setproctitle import *
 import socket
 import os
+from math import floor
 
 import chess
 import chess.engine
@@ -87,13 +88,15 @@ class Board:
         self.mover = mover.Gearmotor_movement()
         
         # In-game variables
-        self.just_moved = True
-        self.white_clock = 0
-        self.black_clock = 0
+        self.white_turn_time = None
+        self.black_turn_time = None
+        self.last_redraw = 0
         
         # Game options
         self.mode = None
         self.flip_board = None
+        self.white_type = None
+        self.black_type = None
         self.player_color = None
         self.engine_time_limit = None
         self.use_clock = None
@@ -102,6 +105,7 @@ class Board:
         
         # Engine
         self.engine = chess.engine.SimpleEngine.popen_uci("stockfish")
+        self.engine_process = None
         self.engine_results =  []
         
         self.led.rainbow(40)
@@ -158,20 +162,9 @@ class Board:
             
     def run_game(self):
         self.game_display()
-        if self.mode == MODE_PVB:
-            if self.game.turn == self.player_color:
-                pass
-            else:
-                if self.just_moved:
-                    self.engine_process = Thread(target=self.play_engine)
-                    self.lcd.disp_two_lines(["Thinking...", ""])
-                    self.engine_process.start()
-                    self.just_moved = False
-                elif not self.engine_process.isAlive():
-                    self.game.push(self.engine_results[-1].move)
-                    self.move_piece(self.game.peek())
-                    self.just_moved = True
-                    self.lcd.disp_two_lines(["Your Turn", ""])
+        move = self.check_for_move()
+        if move:
+            pass
                     
         back, yes, no = self.controls.buttons()
         if True in (back, yes, no):
@@ -181,11 +174,25 @@ class Board:
         self.game = chess.Board()
             
     def game_display(self, redraw=False):
-        self.led.colorBW('green', 'off') if self.game.turn == chess.BLACK else self.led.colorBW('off', 'green')
-        pass
+        if redraw or time() - self.last_redraw >= 1:
+            self.led.colorBW('green', 'off') if self.game.turn == chess.BLACK else self.led.colorBW('off', 'green')
+            self.lcd.disp_two_lines([str(floor(time())), str(self.game.turn)])
+            
+            self.last_redraw = time()
             
     def save_game(self):
         pass
+    
+    def check_for_move(self):
+        ptype = (self.white_type if self.game.turn == chess.WHITE else self.black_type)
+        
+        if ptype == PLAYER_MACHINE:
+            if self.engine_process != None and not self.engine_process.isAlive():
+                return engine_results[-1].move
+        elif ptype == PLAYER_HUMAN:
+            pass
+        
+        return False
     
     @staticmethod
     def intro(*args):
@@ -211,9 +218,14 @@ class Board:
         self.engine_results.append(result)
         
     def start_game(self):
-        set_up = False
-        while not set_up:
-            set_up = True
+        if self.mode == MODE_PVB:
+            self.white_type = PLAYER_HUMAN if self.player_color == chess.WHITE else PLAYER_MACHINE
+        
+        self.led.color('light_orange')
+        while True:
+            self.lcd.disp_two_lines([" Setup board ", ""])
+            sleep(2)
+            break
         
         self.led.color('violet')
         if self.confirm("   Press yes", " to start game"):
@@ -268,7 +280,8 @@ def start():
             intro(delay = cfg.RESTART_DELAY / 2)
             start()
 
-start()
+if __name__ == "__main__":
+    start()
 
 logger.info("Program finished\n")
 
