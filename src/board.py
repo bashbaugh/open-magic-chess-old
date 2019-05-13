@@ -91,6 +91,7 @@ class Board:
         self.white_turn_time = None
         self.black_turn_time = None
         self.last_redraw = 0
+        self.last_BWcolors = ("off", "off")
         
         # Game options
         self.mode = None
@@ -175,7 +176,10 @@ class Board:
             
     def game_display(self, redraw=False):
         if redraw or time() - self.last_redraw >= 1:
-            self.led.colorBW('green', 'off') if self.game.turn == chess.BLACK else self.led.colorBW('off', 'green')
+            BWcolors = ("green,", "off") if self.game.turn == chess.BLACK else ('off', 'green')
+            if BWcolors != self.last_BWcolors:
+                self.led.colorBW(*BWcolors)
+                self.last_BWcolors = BWcolors
             self.lcd.disp_two_lines([str(floor(time())), str(self.game.turn)])
             
             self.last_redraw = time()

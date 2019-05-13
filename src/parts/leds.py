@@ -56,6 +56,7 @@ class Neopixel_RGB_LEDs:
         try:
             if led:
                 self.strip.setPixelColor(led, color)
+                self.strip.show()
             else:
                 self.colorWipe(color)
         except KeyError:
