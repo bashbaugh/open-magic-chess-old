@@ -2,9 +2,9 @@
 
 COMING SOON! An open-source high-tech electronic chessboard. Not finished yet! Once this project is finished I will share links to a tutorial.
 
-## Electronics Setup
+## Hardware and Elecetronics Setup
 
-`TODO electronics setup instructions`
+Read [the Instructable]() tutorial for instructions on how to build the chessboard.
 
 ## Software Setup instructions
 
@@ -30,7 +30,7 @@ Then type `cd open-magic-chess` to change into the directory. Now you will need 
 + Python requirements (python-chess, smbus2, gpiozero, etc.) - install with `sudo pip3 install -r requirements.txt`
 + Stockfish 8 or higher - install with `sudo apt install stockfish -y`
 
-If you are planning to do python development on this project, you will also need a virtual environment:
+<!-- If you are planning to do python development on this project, you will also need a virtual environment:
 
     pip3 install virtualenv
     virtualenv -p python3 venv
@@ -38,7 +38,7 @@ If you are planning to do python development on this project, you will also need
 
 `source venv/bin/activate` will need to be re-run every time you restart your pi.
 
-If you are just planning to build the chessboard then you do not need a virtualenv.
+If you are just planning to build the chessboard then you do not need a virtualenv.-->
 
 ### Enable I2C
 
@@ -51,7 +51,7 @@ You might also need to type `sudo nano /etc/modules` and then add the following 
     
 Then press `Ctr+x` then `y` then enter/return then `sudo reboot` to reboot the pi.
 
-## Legal
+## License
 
 This project is licensed under the [MIT License](https://github.com/scitronboy/open-magic-chess/blob/master/LICENSE).
 

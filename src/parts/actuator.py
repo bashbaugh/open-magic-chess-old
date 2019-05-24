@@ -3,6 +3,8 @@
 Move pieces on board
 """
 
-class Gearmotor_movement:
+class Stepper_actuator:
     def __init__(self):
         pass
+    
+    

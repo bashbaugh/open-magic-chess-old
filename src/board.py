@@ -37,7 +37,7 @@ import chess
 import chess.engine
 
 from constants import *
-from parts import controls, board_sensor, mover, leds
+from parts import controls, board_sensor, actuator, leds
 import menu
 
 # Set process name so that it can be easily found and killed:
@@ -85,11 +85,11 @@ class Board:
         self.led = leds.Neopixel_RGB_LEDs(self.log_warning)
         self.controls = controls.Keyboard_controls()
         self.grid = board_sensor.Reedswitch_grid_sensor()
-        self.mover = mover.Gearmotor_movement()
+        self.actuator = actuator.Stepper_actuator()
         
         # In-game variables
-        self.white_turn_time = None
-        self.black_turn_time = None
+        self.white_clock_time = None
+        self.black_clock_time = None
         self.last_redraw = 0
         self.last_BWcolors = ("off", "off")
         
@@ -270,7 +270,7 @@ def start():
         logger.error("Program crashed")
         logger.critical(traceback.format_exc())
         if crash_counter >= cfg.MAXIMUM_CRASHES:
-            logger.warning("Max crashes reached. Stopping.")
+            logger.warning("Maximum crashes reached. Stopping.")
             lcd.disp_two_lines([" Board crashed", "  Check logs"])
             return
         
@@ -287,7 +287,6 @@ def start():
 if __name__ == "__main__":
     start()
 
-logger.info("Program finished\n")
-
 if cfg.SHUTDOWN_AT_END:
-        os.system("sudo shutdown -h now")
+    logger.info("Shutting Down")
+    os.system("sudo shutdown -h now")
