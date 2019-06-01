@@ -24,3 +24,5 @@ LOGGING_FORMAT = '%(asctime)-10s OPEN-MAGIC-CHESS |%(levelname)s: %(message)s' #
 LOGGING_DATE_FORMAT = '%m-%d %H:%M:%S' # Log message date format
 LOGGING_BACKUP_COUNT = 3 # Number of log files
 LOG_FILE_MAX_BYTES = 6000 # Max bytes per log file
+
+DISPLAY_UPDATE_DELAY = 0.5

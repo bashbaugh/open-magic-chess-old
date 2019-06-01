@@ -3,3 +3,4 @@ gpiozero
 smbus2
 setproctitle
 rpi_ws281x
+keyboard

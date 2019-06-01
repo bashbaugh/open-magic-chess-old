@@ -1,11 +1,12 @@
 """Open Magic Chess
-High tech chessboard.
+High tech chessboard
 
 https://github.com/scitronboy/open-magic-chess
 
 Copyright 2019 Benjamin A. and contributors
 Licensed under MIT license, located in /LICENSE
 """
+
 from time import sleep, time
 
 import config as cfg
@@ -60,11 +61,11 @@ logging_rfh = RotatingFileHandler(cfg.BASE_DIR + 'logs/chessboard.log', maxBytes
 logging_rfh.setLevel(cfg.LOGGING_LEVEL)
 logging_rfh.setFormatter(logging_formatter)
 
-logger = logging.getLogger("omc-logger")
+logger = logging.getLogger("chess-logger")
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging_sh)
 logger.addHandler(logging_rfh)
-logger.info("--- Logger started ---")
+logger.debug("--- Logger started ---")
 
 crash_counter = 0
     
@@ -90,7 +91,8 @@ class Board:
         # In-game variables
         self.white_clock_time = None
         self.black_clock_time = None
-        self.last_redraw = 0
+        self.last_update = 0
+        self.ptype = None # Current player type
         self.last_BWcolors = ("off", "off")
         
         # Game options
@@ -162,41 +164,46 @@ class Board:
             self.co = 0
             
     def run_game(self):
-        self.game_display()
-        move = self.check_for_move()
-        if move:
-            pass
-                    
+        # Check for pause command
         back, yes, no = self.controls.buttons()
-        if True in (back, yes, no):
+        if (back or yes or no):
             self.status = GAME_PAUSED
+            return
+        
+        # Update display if a second has passed
+        if time() - self.last_update >= cfg.DISPLAY_UPDATE_DELAY:
+            self.game_display()
+            self.last_update = time()
+        
+        # Check for moves
+        if self.ptype == PLAYER_MACHINE:
+            if self.engine_process.isAlive() or self.engine_process is None:
+                return
+            self.process_move(engine_results[-1].move)
+            if not self.actuator.move(engine_results[-1].move):
+                self.confirm("Unable to move", "Check Logs")
+        elif ptype == PLAYER_HUMAN:
+            self.grid.update()
+            if not self.piece_moved():
+                return
             
+        
+        ptype = (self.white_type if self.game.turn == chess.WHITE else self.black_type) # player type
+        
+        sleep(20)
+            
+    def game_display(self):
+        BWcolors = ("green,", "off") if self.game.turn == chess.BLACK else ('off', 'green')
+        if BWcolors != self.last_BWcolors:
+            self.led.colorBW(*BWcolors)
+            self.last_BWcolors = BWcolors
+        self.lcd.disp_two_lines([str(floor(time())), str(self.game.turn)])
+        
     def clear_board(self):
         self.game = chess.Board()
             
-    def game_display(self, redraw=False):
-        if redraw or time() - self.last_redraw >= 1:
-            BWcolors = ("green,", "off") if self.game.turn == chess.BLACK else ('off', 'green')
-            if BWcolors != self.last_BWcolors:
-                self.led.colorBW(*BWcolors)
-                self.last_BWcolors = BWcolors
-            self.lcd.disp_two_lines([str(floor(time())), str(self.game.turn)])
-            
-            self.last_redraw = time()
-            
     def save_game(self):
-        pass
-    
-    def check_for_move(self):
-        ptype = (self.white_type if self.game.turn == chess.WHITE else self.black_type)
-        
-        if ptype == PLAYER_MACHINE:
-            if self.engine_process != None and not self.engine_process.isAlive():
-                return engine_results[-1].move
-        elif ptype == PLAYER_HUMAN:
-            pass
-        
-        return False
+        logger.info("Saving game")
     
     @staticmethod
     def intro(*args):
