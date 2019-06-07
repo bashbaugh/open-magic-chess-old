@@ -39,6 +39,7 @@ import chess.engine
 
 from constants import *
 from parts import controls, board_sensor, actuator, leds
+import app
 import menu
 
 # Set process name so that it can be easily found and killed:
@@ -110,6 +111,9 @@ class Board:
         self.engine = chess.engine.SimpleEngine.popen_uci("stockfish")
         self.engine_process = None
         self.engine_results =  []
+        
+        # App
+        app.run_app()
         
         self.led.rainbow(40)
         logger.info("Board initialized")

@@ -26,3 +26,8 @@ LOGGING_BACKUP_COUNT = 3 # Number of log files
 LOG_FILE_MAX_BYTES = 6000 # Max bytes per log file
 
 DISPLAY_UPDATE_DELAY = 0.5
+
+# This is the base URL for the app. If you change it, you will need to rebuild the frontend in /frontend and change the publicPath property in /frontend/vue.config.js so that they match:
+APP_BASE_URL = '/app'
+
+APP_BUILD_DIR = 'build' # The directory, relative to the app folder, to serve the static app from.
