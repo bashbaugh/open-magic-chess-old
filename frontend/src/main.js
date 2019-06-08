@@ -7,5 +7,8 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
-  render: h => h(App)
+  render: h => h(App),
+  created: function() {
+    document.title = "Open Magic Chess"
+  }
 }).$mount('#app')

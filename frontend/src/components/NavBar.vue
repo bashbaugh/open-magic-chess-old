@@ -1,10 +1,10 @@
 <template>
-  <el-menu :default-active="activeIndex" class="el-menu" mode="horizontal">
+  <el-menu default-active="1" class="el-menu" mode="horizontal">
     <el-menu-item index="1">
-      <router-link to='/'>Home</router-link>
+      <router-link to='/'><div class="ml">Home</div></router-link>
     </el-menu-item>
     <el-menu-item index="2">
-      <router-link to='/new'>New Game</router-link>
+      <router-link to='/new'><div class="ml">New Game</div></router-link>
     </el-menu-item>
     <el-submenu index="3">
       <template slot="title">Games</template>
@@ -19,14 +19,17 @@
       </el-submenu>
     </el-submenu>
     <el-menu-item index="4" class="fright">
-      <router-link to='/about'>About</router-link>
+      <router-link to='/about'><div class="ml fright">About</div></router-link>
     </el-menu-item>
   </el-menu>
 </template>
 
 <style scoped>
-  a {
+  .ml {
     height: 100%;
     width: 100%;
+  }
+  .fright {
+    float: right;
   }
 </style>

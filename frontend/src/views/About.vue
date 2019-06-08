@@ -1,5 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h2>Open Magic Chess</h2>
+    <p>This is the <a href="https://github.com/scitronboy/open-magic-chess">Magic Chessboard</a> app.</p>
   </div>
 </template>
