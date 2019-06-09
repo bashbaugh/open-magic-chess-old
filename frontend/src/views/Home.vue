@@ -46,8 +46,8 @@ export default {
       
     }
   },
-  created () {
-    
+  mounted () {
+    this.loadingText = "Connecting to chessboard..."
   },
   components: {
     chessboard
