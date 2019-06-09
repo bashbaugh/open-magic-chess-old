@@ -1,8 +1,20 @@
-# Magic Chess Boar
+# Magic Chess Board
 
 COMING SOON! An open-source high-tech electronic chessboard. Not finished yet! Once this project is finished I will share links to a tutorial.
 
-## Hardware and Elecetronics Setup
+### Features
+
++ Chess AI
++ Stepper motor controlled electromagnet under the board to move pieces
++ Web app
++ LCD control panel
++ Indicator LEDs
++ Player vs player mode, player vs board mode, board vs board mode
++ Game analysis
++ Game save system
++ + More!
+
+## Hardware and Electronics Setup
 
 Read [the Instructable]() tutorial for instructions on how to build the chessboard.
 
