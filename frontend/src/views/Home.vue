@@ -1,16 +1,16 @@
 <template>
   <div class="home">
     <el-row
-      v-loading="boardLoading"
+      v-loading="$store.state.loading"
       element-loading-background="rgba(255, 255, 255, 0.6)"
-      :element-loading-text="loadingText" >
+      :element-loading-text="$store.state.loadingText" >
       <el-col :sm="12">
         <div id="board" >
           <chessboard
             :free="freeMoves"
             :orientation="boardOrientation"
             :showThreats="showPlays"
-            :fen="boardfen"
+            :fen="$store.state.boardfen"
             @onMove="onMove" />
             <el-radio v-model="boardOrientation" label="white">White at front</el-radio>
             <el-radio v-model="boardOrientation" label="black">Black at front</el-radio>
@@ -34,11 +34,8 @@ export default {
   data () {
     return {
       boardOrientation: 'white',
-      boardLoading: true,
-      loadingText: "",
       freeMoves: false,
       showPlays: false,
-      boardfen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
     }
   },
   methods: {
@@ -47,7 +44,6 @@ export default {
     }
   },
   mounted () {
-    this.loadingText = "Connecting to chessboard..."
   },
   components: {
     chessboard

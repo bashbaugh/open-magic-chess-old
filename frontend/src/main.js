@@ -5,7 +5,6 @@ import router from './router'
 import './plugins/element.js'
 import store from './store'
 
-Vue.use(VueSocketio, `//${window.location.host}`, store);
 
 Vue.config.productionTip = false
 

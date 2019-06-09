@@ -2,16 +2,19 @@
   <div id="app">
     <NavBar />
     <router-view />
+    <Connection />
   </div>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+import Connection from '@/components/Connection.vue'
 
 export default {
   name: 'app',
   components: {
-    NavBar
+    NavBar,
+    Connection
   }
 }
 </script>
