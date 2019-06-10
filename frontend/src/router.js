@@ -25,6 +25,14 @@ export default new Router({
       name: 'current-games',
       component: () => import(/* webpackChunkName: "current-games" */ './views/Games.vue')
     },
+    { path: '/finished-games',
+      name: 'finished-games',
+      component: () => import(/* webpackChunkName: "finished-games" */ './views/FinishedGames.vue')
+    },
+    { path: '/settings',
+      name: 'settings',
+      component: () => import(/* webpackChunkName: "settings" */ './views/Settings.vue')
+    },
     { path: '*', name: '404', component: NotFound}
   ]
 })

@@ -16,10 +16,13 @@ logging_handler.setFormatter(logging_formatter)
 
 server = None
 
-def run_app():
+def run_app(dummy_server=False):
     global server
-    server = Process(target=_app.start, args=(logging_handler,))
-    server.start()
+    if not dummy_server:
+        server = Process(target=_app.start, args=(logging_handler,))
+        server.start()
+    else:
+        _app.start(logging_handler)
     
 def stop_app():
     global server

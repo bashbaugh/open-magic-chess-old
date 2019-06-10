@@ -1,10 +1,12 @@
 from flask import Flask, redirect
+from flask_socketio import SocketIO
 
 import config as cfg
 
-# The app is served as static files from the build directory
-
+# The app is served as static files from the build directory:
 app = Flask(__name__, static_url_path=cfg.APP_BASE_URL, static_folder=cfg.APP_BUILD_DIR)
+
+socketio = SocketIO(app)
 
 @app.route('/')
 def redir_to_index():
@@ -22,4 +24,4 @@ def page_not_found(e):
     
 def start(logging_handler):
     app.logger.addHandler(logging_handler)
-    app.run(host='0.0.0.0', port=80, use_reloader=False, debug=True)
+    socketio.run(app, host='0.0.0.0', port=80, use_reloader=False, debug=True)

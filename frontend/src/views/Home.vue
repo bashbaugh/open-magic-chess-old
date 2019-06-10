@@ -10,7 +10,7 @@
             :free="freeMoves"
             :orientation="boardOrientation"
             :showThreats="showPlays"
-            :fen="$store.state.boardfen"
+            :fen.sync="$store.state.boardfen"
             @onMove="onMove" />
             <el-radio v-model="boardOrientation" label="white">White at front</el-radio>
             <el-radio v-model="boardOrientation" label="black">Black at front</el-radio>

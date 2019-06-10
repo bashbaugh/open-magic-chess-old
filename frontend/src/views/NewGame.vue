@@ -10,7 +10,14 @@
       v-loading="$store.state.loading"
       element-loading-background="rgba(0, 0, 0, 0.2)"
       :element-loading-text="$store.state.loadingText" >
-      Game type
+      <el-select v-model="value" placeholder="Select game type">
+        <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+      </el-select>
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="$router.push('/')">Cancel</el-button>
