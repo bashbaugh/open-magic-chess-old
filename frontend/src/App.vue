@@ -1,8 +1,10 @@
 <template>
   <div id="app">
     <NavBar />
-    <router-view />
     <Connection />
+    <keep-alive include="home">
+      <router-view/>
+    </keep-alive>
   </div>
 </template>
 

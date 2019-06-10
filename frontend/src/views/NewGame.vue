@@ -10,13 +10,19 @@
       v-loading="$store.state.loading"
       element-loading-background="rgba(0, 0, 0, 0.2)"
       :element-loading-text="$store.state.loadingText" >
-      <el-select v-model="value" placeholder="Select game type">
+      <el-select v-model="gameType" placeholder="Select game type">
         <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-        </el-option>
+          key="0"
+          label="Player vs board"
+          value="0" />
+        <el-option
+          key="1"
+          label="Player vs player"
+          value="1"/>
+        <el-option
+          key="2"
+          label="Board vs board"
+          value="2" />
       </el-select>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -33,7 +39,7 @@ export default {
   name: 'NewGame',
   data () {
     return {
-      
+      gameType: null,
     }
   },
   methods: {

@@ -10,7 +10,7 @@
             :free="freeMoves"
             :orientation="boardOrientation"
             :showThreats="showPlays"
-            :fen.sync="$store.state.boardfen"
+            :fen.sync="boardfen"
             @onMove="onMove" />
             <el-radio v-model="boardOrientation" label="white">White at front</el-radio>
             <el-radio v-model="boardOrientation" label="black">Black at front</el-radio>
@@ -33,6 +33,7 @@ export default {
   name: 'home',
   data () {
     return {
+      boardfen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
       boardOrientation: 'white',
       freeMoves: false,
       showPlays: false,
