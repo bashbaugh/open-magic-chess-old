@@ -1,6 +1,6 @@
 # Magic Chess Board
 
-COMING SOON! An open-source high-tech electronic chessboard. Not finished yet! Once this project is finished I will share links to a tutorial.
+> **COMING SOON! An open-source high-tech electronic chessboard. _Not finished yet!_ Once this project is finished I will share links to a tutorial.**
 
 ### Features
 
