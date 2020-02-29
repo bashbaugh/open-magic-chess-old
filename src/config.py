@@ -15,7 +15,7 @@ BUTTON_PRESS_DELAY = 0.4 # Delay after pressing a button. Should be greater than
 
 PROCESS_NAME = 'open-magic-chess'
 
-INTRO_DELAY = 1.5 # How long each part of the intro lasts
+INTRO_DELAY = 1 # How long each part of the intro lasts
 RESTART_DELAY = 10 # How long it takes to restart
 SHUTDOWN_DELAY = 2 # How long the shutdown message shows for
 

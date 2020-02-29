@@ -5,3 +5,4 @@ setproctitle
 rpi_ws281x
 keyboard
 flask
+flask_socketio

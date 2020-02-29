@@ -14,6 +14,10 @@ This file contains the menus. The menu layout plan is listed in `menu_layout.md`
 
 The `parts` package contains the classes to control each hardware part of the board. If you would like to add a new part, create a control class for the part and add it the the parts directory. More info about creating an alternative part is listed within the part files.
 
+### app
+
+The `app` package contains the server code for the chessboard web app.
+
 ### `config.py`
 
 Contains the configuration for the chessboard.

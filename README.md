@@ -32,13 +32,13 @@ Finally, you will need expand your filesystem so that you can take advantage of 
 
 ### Python dependencies
 
-SSH into your pi again and type this to install Git and pip: `sudo apt install git python3-pip -y` . It will take a minute or two.
+SSH into your pi again and type this to install Git and pip: `sudo apt update && sudo apt install git python3-pip -y` . It will take a minute or two.
 
 Then type `git clone https://github.com/scitronboy/open-magic-chess.git` to download the code.
 
 Then type `cd open-magic-chess` to change into the directory. Now you will need the following:
 
-+ Python 3.5 - comes preinstalled on Raspbian. Typing `python3 --version` should return something containing `3.5`.
++ Python 3.7 - comes preinstalled on Raspbian. Typing `python3 --version` should return something containing `3.7`.
 + Python requirements (python-chess, smbus2, gpiozero, etc.) - install with `sudo pip3 install -r requirements.txt`
 + Stockfish 8 or higher - install with `sudo apt install stockfish -y`
 

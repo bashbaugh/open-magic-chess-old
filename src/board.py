@@ -15,7 +15,7 @@ def intro(loading=False, delay=cfg.INTRO_DELAY):
     lcd.clear()
     lcd.display_string("Open magic chess", 1)
     if loading:
-        lcd.display_string("Loading...", 2)
+        lcd.display_string("    Welcome", 2)
         sleep(delay * 1.5)
     else:
         lcd.display_string("Please wait...  ", 2)
@@ -85,7 +85,7 @@ class Board:
         # If you want to use a customized part just replace any of these class names with your own.
         self.lcd = lcd
         self.led = leds.Neopixel_RGB_LEDs(self.log_warning)
-        self.controls = controls.Keyboard_controls()
+        self.controls = controls.Basic_buttons()
         self.grid = board_sensor.Reedswitch_grid_sensor()
         self.actuator = actuator.Stepper_actuator()
         
@@ -108,7 +108,7 @@ class Board:
         self.clock_time_increment = None
         
         # Engine
-        self.engine = chess.engine.SimpleEngine.popen_uci("stockfish")
+        self.engine = chess.engine.SimpleEngine.popen_uci("/usr/games/stockfish")
         self.engine_process = None
         self.engine_results =  []
         

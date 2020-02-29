@@ -19,8 +19,8 @@ def page_not_found(e):
     
 @app.errorhandler(505)
 def page_not_found(e):
-    # note that we set the 404 status explicitly
-    return "Something went wrong. Please try again.", 404
+    # note that we set the 505 status explicitly
+    return "Something went wrong. Please try again.", 505
     
 def start(logging_handler):
     app.logger.addHandler(logging_handler)
