@@ -26,7 +26,7 @@ Install raspbian lite on a raspberry pi zero W and set it up so that you can ssh
 
 [Install the image](https://www.raspberrypi.org/documentation/installation/installing-images/README.md).
 
-And then setup and connect headless SSH so that you can access your pi without connecting it to a monitor or keyboard. [Here is a tutorial](https://core-electronics.com.au/tutorials/raspberry-pi-zerow-headless-wifi-setup.html).
+And then setup and connect headless SSH so that you can access your pi without connecting it to a monitor or keyboard. [Here is a tutorial](https://core-electronics.com.au/tutorials/raspberry-pi-zerow-headless-wifi-setup.html). **If using windows, make sure you click the view tab at the top in file explorer and select "file name extensions."**
 
 Finally, you will need expand your filesystem so that you can take advantage of the full capacity of your SD card. SSH into your pi then type `sudo raspi-config` and then navigate to “Advanced Options” > “Expand Filesystem”. Then press "Finish" and say yes when it asks you to "reboot now".
 
