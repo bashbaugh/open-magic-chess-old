@@ -1,3 +1,24 @@
+"""Copyright (c) 2019, Douglas Otwell
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 import dbus
 import dbus.mainloop.glib
 import dbus.exceptions
@@ -227,6 +248,7 @@ class Characteristic(dbus.service.Object):
     def add_timeout(self, timeout, callback):
         GObject.timeout_add(timeout, callback)
 
+
 class Descriptor(dbus.service.Object):
     def __init__(self, uuid, flags, characteristic):
         index = characteristic.get_next_index()
@@ -269,3 +291,25 @@ class Descriptor(dbus.service.Object):
     def WriteValue(self, value, options):
         print('Default WriteValue called, returning error')
         raise NotSupportedException()
+
+
+class CharacteristicUserDescriptionDescriptor(Descriptor):
+    CUD_UUID = '2901'
+
+    def __init__(self, bus, index, characteristic):
+        self.writable = 'writable-auxiliaries' in characteristic.flags
+        self.value = array.array('B', b'This is a characteristic for testing')
+        self.value = self.value.tolist()
+        Descriptor.__init__(
+                self, bus, index,
+                self.CUD_UUID,
+                ['read', 'write'],
+                characteristic)
+
+    def ReadValue(self, options):
+        return self.value
+
+    def WriteValue(self, value, options):
+        if not self.writable:
+            raise NotPermittedException()
+        self.value = value
