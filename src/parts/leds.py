@@ -26,7 +26,7 @@ class Neopixel_RGB_LEDs:
     LED_INVERT = False   # True to invert the signal (when using NPN transistor level shift)
     LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
     CONVERT_RGB_TO_GRB = True # Changes RGB format to GRB. Set this to false if your leds' colors are messed up.
-    
+
     def __init__(self, log_warning):
         self.stop_rainbow = True
         
@@ -93,6 +93,3 @@ class Neopixel_RGB_LEDs:
         self.stop_rainbow = False
         rainbow_thread = Thread(target=lambda: self._rainbow(wait_ms))
         rainbow_thread.start()
-        
-        
-        

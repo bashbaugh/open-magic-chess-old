@@ -1,5 +1,3 @@
-
-
 The layout and flow of the menu system. If you make a change to the way the menu system works, please reflect those changes here.
 
 ### Main menu
@@ -24,7 +22,7 @@ cancel game -> are you sure? -> back to main menu
 
 ### Menu behaviour & rules
 
-+ (b) back button goes to previous menu in menu_stack
-+ (y) yes button selects option
-+ (n) no button selects false for binary-option menu; increments to next option in menu for non-binary menus
-+ All binary menus should have `(y/n)` in the prompt to let the user know it is a yes/no question.
+- (b) back button goes to previous menu in menu_stack
+- (y) yes button selects option
+- (n) no button selects false for binary-option menu; increments to next option in menu for non-binary menus
+- All binary menus should have `(y/n)` in the prompt to let the user know it is a yes/no question.

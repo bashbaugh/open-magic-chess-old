@@ -11,20 +11,6 @@ from time import sleep, time
 
 import config as cfg
 
-def intro(loading=False, delay=cfg.INTRO_DELAY):
-    lcd.clear()
-    lcd.display_string("Open magic chess", 1)
-    if loading:
-        lcd.display_string("    Welcome", 2)
-        sleep(delay * 1.5)
-    else:
-        lcd.display_string("Please wait...  ", 2)
-    sleep(delay)
-
-from parts import lcd_driver
-lcd = lcd_driver.Serial_lcd()
-intro(loading=True)
-
 from threading import Thread
 import traceback
 import logging
@@ -38,11 +24,9 @@ import chess
 import chess.engine
 
 from constants import *
-from parts import controls, board_sensor, actuator, leds
-import app
-import menu
+from parts import piece_tracker, actuator, leds
 
-# Set process name so that it can be easily found and killed:
+# Set process name so that it can be easily found/killed:
 setproctitle(cfg.PROCESS_NAME)
 
 # Create logs and saves directory:
