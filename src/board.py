@@ -25,6 +25,7 @@ import chess.engine
 
 from constants import *
 from parts import piece_tracker, actuator, leds
+from gatt_server import BleApplication
 
 # Set process name so that it can be easily found/killed:
 setproctitle(cfg.PROCESS_NAME)
@@ -53,13 +54,12 @@ logger.addHandler(logging_rfh)
 logger.debug("--- Logger started ---")
 
 crash_counter = 0
-    
 
 class Board:
     """ Magic chess board
     """
     
-    def __init__(self, lcd):
+    def __init__(self):
         self.menu_stack = [menu.MAIN_MENU]
         self.co = 0 # current menu option
         self.game = None
@@ -67,7 +67,6 @@ class Board:
         
         # Parts
         # If you want to use a customized part just replace any of these class names with your own.
-        self.lcd = lcd
         self.led = leds.Neopixel_RGB_LEDs(self.log_warning)
         self.controls = controls.Basic_buttons()
         self.grid = board_sensor.Reedswitch_grid_sensor()
@@ -116,40 +115,6 @@ class Board:
         except KeyboardInterrupt:
             logger.debug("Keyboard Interrupt")
             self.shutdown()
-        
-    def run_menu(self):
-        if self.status is not GAME_PAUSED:
-            cm = self.menu_stack[-1] # Current Menu
-        else:
-            cm = menu.PAUSE_MENU
-        
-        # MENU.optionl1 is a constant first line message for that menu
-        if cm.optionl1 is None:
-            self.lcd.disp_two_lines(cm.options[self.co])
-        else:
-            self.lcd.clear()
-            self.lcd.display_string(cm.optionl1, 1)
-            self.lcd.display_string(cm.options[self.co], 2)
-        
-        back, yes, no = self.controls.buttons()
-        while not (back or yes or no):
-            back, yes, no = self.controls.buttons()
-        sleep(cfg.BUTTON_PRESS_DELAY)
-        if back:
-            self.co = 0
-            if len(self.menu_stack) > 1 and self.status is not GAME_PAUSED:
-                del self.menu_stack[-1]
-        
-        if no:
-            self.co += 1
-            if len(cm.options) == 1:
-                cm.no(self)
-            if self.co >= len(cm.options):
-                self.co = 0
-        
-        if yes:
-            cm.yes(self)
-            self.co = 0
             
     def run_game(self):
         # Check for pause command
@@ -251,30 +216,29 @@ class Board:
         self.lcd.backlight(False)
         self.led.shutdown()
         self.status = SHUTDOWN
-            
+
 
 def start():
     global crash_counter
     try:
-        board = Board(lcd)
-        board.main()
+        ble_app = BleApplication()
+        logger.info("Starting BLE Application")
+        ble_app.run()
+        # board = Board(lcd)
+        # board.main()
     except Exception as e:
-            
         crash_counter += 1
+
+        ble_app.quit()
         
         logger.error("Program crashed")
         logger.critical(traceback.format_exc())
         if crash_counter >= cfg.MAXIMUM_CRASHES:
             logger.warning("Maximum crashes reached. Stopping.")
-            lcd.disp_two_lines([" Board crashed", "  Check logs"])
             return
         
         if cfg.RESTART_ON_CRASH:
             logger.info("Restarting...")
-            try:
-                lcd.disp_two_lines([" Board crashed", " Restarting..."])
-            except:
-                logger.error("Failed to write to LCD")
             sleep(cfg.RESTART_DELAY / 2)
             intro(delay = cfg.RESTART_DELAY / 2)
             start()

@@ -4,15 +4,15 @@
 
 ### Features
 
-+ Chess AI
-+ Stepper motor controlled electromagnet under the board to move pieces
-+ Web app
-+ LCD control panel
-+ Indicator LEDs
-+ Player vs player mode, player vs board mode, board vs board mode
-+ Game analysis
-+ Game save system
-+ + More!
+- Chess AI
+- Stepper motor controlled electromagnet under the board to move pieces
+- Web app
+- LCD control panel
+- Indicator LEDs
+- Player vs player mode, player vs board mode, board vs board mode
+- Game analysis
+- Game save system
+- - More!
 
 ## Hardware and Electronics Setup
 
@@ -32,21 +32,18 @@ Finally, you will need expand your filesystem so that you can take advantage of 
 
 ### Python dependencies
 
-SSH into your pi again and type this to install Git and pip: `sudo apt update && sudo apt install git python3-pip -y` . It will take a minute or two.
+SSH into your pi again and type this to install Git and venv: `sudo apt update && sudo apt install git python3-venv -y` . It will take a minute or two.
 
 Then type `git clone https://github.com/scitronboy/open-magic-chess.git` to download the code.
 
 Then type `cd open-magic-chess` to change into the directory. Now you will need the following:
 
-+ Python 3.7 - comes preinstalled on Raspbian. Typing `python3 --version` should return something containing `3.7`.
-+ Python requirements (python-chess, smbus2, gpiozero, etc.) - install with `sudo pip3 install -r requirements.txt`
-+ Stockfish 8 or higher - install with `sudo apt install stockfish -y`
+- Python 3.7 - comes preinstalled on Raspbian. Typing `python3 --version` should return something containing `3.7`.
+- Bluetooth gobject requirements - install with `sudo apt install libgirepository1.0-dev gcc libcairo2-dev pkg-config python3-dev gir1.2-gtk-3.0`
+- Python requirements (python-chess, dbus, gpiozero, etc.) - install with `sudo pip3 install -r requirements.txt`
+- Stockfish 8 or higher - install with `sudo apt install stockfish -y`
 
 <!-- If you are planning to do python development on this project, you will also need a virtual environment:
-
-    pip3 install virtualenv
-    virtualenv -p python3 venv
-    source venv/bin/activate
 
 `source venv/bin/activate` will need to be re-run every time you restart your pi.
 
@@ -60,7 +57,7 @@ You might also need to type `sudo nano /etc/modules` and then add the following 
 
     i2c-bcm2708
     i2c-dev
-    
+
 Then press `Ctr+x` then `y` then enter/return then `sudo reboot` to reboot the pi.
 
 ## License
@@ -68,7 +65,7 @@ Then press `Ctr+x` then `y` then enter/return then `sudo reboot` to reboot the p
 This project is licensed under the [MIT License](https://github.com/scitronboy/open-magic-chess/blob/master/LICENSE).
 
 You are free to modify and distribute copies of this software (read license for more details). If you do so, please give credit to it's creators, Benjamin A. and contributors. Also please link to this GitHub repository!
-    
+
 ## Contributing
 
 Feel free to contribute to this project in any way you want. Keep in mind that it is best to open an issue before opening a pull request, so that we can discuss your idea/bug-fix/etc. Also look through closed issues before you open your own, so that you don't post something that's already been solved.

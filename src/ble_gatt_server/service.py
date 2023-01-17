@@ -1,4 +1,4 @@
-"""Copyright (c) 2019, Douglas Otwell
+"""Copyright (c) 2019, Douglas Otwell, Benjamin Ashbaugh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -198,6 +198,14 @@ class Characteristic(dbus.service.Object):
     def get_descriptors(self):
         return self.descriptors
 
+    def encode_value(self, str):
+        value = []
+
+        for c in str:
+            value.append(dbus.Byte(c.encode()))
+
+        return value
+
     @dbus.service.method(DBUS_PROP_IFACE,
                          in_signature='s',
                          out_signature='a{sv}')
@@ -248,12 +256,12 @@ class Characteristic(dbus.service.Object):
     def add_timeout(self, timeout, callback):
         GObject.timeout_add(timeout, callback)
 
-
 class Descriptor(dbus.service.Object):
-    def __init__(self, uuid, flags, characteristic):
+    def __init__(self, uuid, descriptor, flags, characteristic):
         index = characteristic.get_next_index()
         self.path = characteristic.path + '/desc' + str(index)
         self.uuid = uuid
+        self.descriptor_value = descriptor
         self.flags = flags
         self.chrc = characteristic
         self.bus = characteristic.get_bus()
@@ -284,8 +292,13 @@ class Descriptor(dbus.service.Object):
                         in_signature='a{sv}',
                         out_signature='ay')
     def ReadValue(self, options):
-        print ('Default ReadValue called, returning error')
-        raise NotSupportedException()
+        value = []
+        desc = self.descriptor_value
+
+        for c in desc:
+            value.append(dbus.Byte(c.encode()))
+
+        return value
 
     @dbus.service.method(GATT_DESC_IFACE, in_signature='aya{sv}')
     def WriteValue(self, value, options):
