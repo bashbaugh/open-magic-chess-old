@@ -1,5 +1,7 @@
 # Magic Chess Board
 
+**THIS REPOSITORY IS ARCHIVED, PLEASE GO TO https://github.com/bashbaugh/magic-chess**
+
 > **COMING SOON! An open-source high-tech electronic chessboard. _Not finished yet!_ Once this project is finished I will share links to a tutorial.**
 
 ### Features
